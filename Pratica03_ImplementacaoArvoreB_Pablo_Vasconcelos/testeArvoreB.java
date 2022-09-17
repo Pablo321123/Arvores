@@ -23,7 +23,7 @@ public class testeArvoreB {
                 // Tempo gasto na pesquisa e numero de comparacao:
                 ab.setNumComparacao(-1);
                 long initTime = System.nanoTime();
-                ab.pesquisa(new Item(NUMPESQUISA), ab.getRaiz());
+                ab.pesquisa(new Item(NUMPESQUISA));
                 long finishTime = System.nanoTime();
                 System.out.println(Cores.ANSI_YELLOW + "Tempo de pesquisa: " + Cores.ANSI_GREEN
                         + (finishTime - initTime) + Cores.ANSI_RESET + " ns" // NanoSegundos (ns) = 10^-9 segs

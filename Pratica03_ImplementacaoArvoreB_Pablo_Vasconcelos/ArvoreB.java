@@ -17,10 +17,16 @@ public class ArvoreB {
     private int numComparacao;
     private int numElementos;
 
-    public ArvoreB(int qtdDesc) {
+    public ArvoreB(int m) {
         numComparacao = -1;
         numElementos = 0;
-        mm = qtdDesc;
+        raiz = null;
+        this.m = m;
+        mm = 2 * m;
+    }
+
+    public Item pesquisa(Item reg) {
+        return pesquisa(reg, raiz);
     }
 
     public Item pesquisa(Item reg, Pagina ap) {
@@ -120,36 +126,36 @@ public class ArvoreB {
                         this.insereNaPagina(ap, regRetorno[0], apRetorno);
                         cresceu[0] = false;
                         apRetorno = ap;
+                    } else { // Overflow: Página tem que ser dividida
+                        Pagina apTemp = new Pagina(this.mm); // É criada uma nova Pagina apTemp;
+                        apTemp.p[0] = null;
+
+                        if (i <= this.m) { // (b) Verifica se o novo registro deve ficar na nova Pagina apTemp ou na
+                                           // Pagina
+                                           // atual ap;
+                            this.insereNaPagina(apTemp, ap.r[this.mm - 1], ap.p[this.mm]);
+                            ap.n--;
+                            this.insereNaPagina(ap, regRetorno[0], apRetorno); // (b)
+                        } else {
+                            this.insereNaPagina(apTemp, regRetorno[0] , apRetorno);// (b)
+                        }
+
+                        for (int j = this.m + 1; j < this.mm; j++) {
+                            this.insereNaPagina(apTemp, ap.r[j], ap.p[j + 1]); // Transfere a metade direita da Pagina
+                                                                               // atual
+                                                                               // ap para a nova Pagina apTemp;
+                            ap.p[j + 1] = null; // transfere a posse da memoria
+                        }
+
+                        ap.n = this.m;
+                        apTemp.p[0] = ap.p[this.m + 1];
+                        regRetorno[0] = ap.r[this.m]; // Atribui o registro do meio à regRetorno → vai subir na árvore;
+                        apRetorno = apTemp; // Atribui o objeto apTemp à apRetorno → para ser referenciado pelo novo
+                                            // ponteiro da Pagina “superior”;
+
                     }
-                } else { // Overflow: Página tem que ser dividida
-                    Pagina apTemp = new Pagina(this.mm); // É criada uma nova Pagina apTemp;
-                    apTemp.p[0] = null;
-
-                    if (i <= this.m) { // (b) Verifica se o novo registro deve ficar na nova Pagina apTemp ou na Pagina
-                                       // atual ap;
-                        this.insereNaPagina(apTemp, ap.r[this.mm - 1], ap.p[this.mm]);
-                        ap.n--;
-                        this.insereNaPagina(apTemp, regRetorno[0], apRetorno); // (b)
-                    } else {
-                        this.insereNaPagina(apTemp, regRetorno[0], apRetorno);// (b)
-                    }
-
-                    for (int j = this.m + 1; j < this.mm; j++) {
-                        this.insereNaPagina(apTemp, ap.r[j], ap.p[j + 1]); // Transfere a metade direita da Pagina atual
-                                                                           // ap para a nova Pagina apTemp;
-                        ap.p[j + 1] = null; // transfere a posse da memoria
-                    }
-
-                    ap.n = this.m;
-                    apTemp.p[0] = ap.p[this.m + 1];
-                    regRetorno[0] = ap.r[this.m]; // Atribui o registro do meio à regRetorno → vai subir na árvore;
-                    apRetorno = apTemp; // Atribui o objeto apTemp à apRetorno → para ser referenciado pelo novo
-                                        // ponteiro da Pagina “superior”;
-
                 }
-
             }
-
         }
 
         return (cresceu[0] ? apRetorno : ap);
@@ -169,9 +175,5 @@ public class ArvoreB {
 
     public void setNumElementos(int numElementos) {
         this.numElementos = numElementos;
-    }
-
-    public Pagina getRaiz() {
-        return raiz;
     }
 }
