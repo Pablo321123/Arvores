@@ -25,4 +25,9 @@ public class Item {
         return chave;
     }
 
+    public void alteraChave(Object chave) {
+        Integer ch = (Integer) chave;
+        this.chave = ch.intValue();
+    }
+
 }
